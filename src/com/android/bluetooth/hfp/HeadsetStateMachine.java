@@ -382,6 +382,14 @@ public class HeadsetStateMachine extends StateMachine {
         return  mIsBlacklistedForSCOAfterSLC;
     }
 
+    public boolean hasMessagesInQueue(int what) {
+        return super.hasMessages(what);
+    }
+
+    public boolean hasDeferredMessagesInQueue(int what) {
+        return super.hasDeferredMessages(what);
+    }
+
     /**
      * Base class for states used in this state machine to share common infrastructures
      */
@@ -599,6 +607,17 @@ public class HeadsetStateMachine extends StateMachine {
             mStateMachineCallState.mCallState = 0;
             mStateMachineCallState.mNumber = "";
             mStateMachineCallState.mType = 0;
+
+            // clear pending call states
+            while (mDelayedCSCallStates.isEmpty() != true)
+            {
+               mDelayedCSCallStates.poll();
+            }
+
+            while (mPendingCallStates.isEmpty() != true)
+            {
+               mPendingCallStates.poll();
+            }
 
             broadcastStateTransitions();
             // Remove the state machine for unbonded devices
